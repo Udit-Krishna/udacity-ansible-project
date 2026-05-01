@@ -1,2 +1,45 @@
 - hosts: aws
   become: true
+  tasks:
+    - name: Ensure firewalld package is installed
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+
+    - name: Ensure firewalld service is started and enabled
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Open required firewall ports
+      ansible.posix.firewalld:
+        port: "{{ item }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
+      loop: "{{ ports }}"
+
+    - name: Check if companyplus document root exists
+      ansible.builtin.stat:
+        path: /var/www/html/www.companyplus.com
+      register: companyplus_dir
+
+    - name: Report companyplus document root status
+      block:
+        - name: Print missing directory message
+          ansible.builtin.debug:
+            msg: "ERROR: /var/www/html/www.companyplus.com does not exist."
+          when: not companyplus_dir.stat.exists
+
+        - name: Print directory exists message
+          ansible.builtin.debug:
+            msg: "/var/www/html/www.companyplus.com exists."
+          when: companyplus_dir.stat.exists
+
+  roles:
+    - role: webserver
+      vars:
+        app_root: html_demo_site-main
+        server_name: "{{ ansible_default_ipv4.address }}"
+        document_root: /var/www/html
