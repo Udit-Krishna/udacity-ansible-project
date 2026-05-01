@@ -1,5 +1,12 @@
 - hosts: aws
   become: true
+  roles:
+    - role: webserver
+      vars:
+        app_root: html_demo_site-main
+        server_name: "{{ ansible_default_ipv4.address }}"
+        document_root: /var/www/html
+
   tasks:
     - name: Ensure firewalld package is installed
       ansible.builtin.package:
@@ -37,9 +44,3 @@
             msg: "/var/www/html/www.companyplus.com exists."
           when: companyplus_dir.stat.exists
 
-  roles:
-    - role: webserver
-      vars:
-        app_root: html_demo_site-main
-        server_name: "{{ ansible_default_ipv4.address }}"
-        document_root: /var/www/html
