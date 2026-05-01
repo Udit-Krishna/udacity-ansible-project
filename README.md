@@ -1,55 +1,26 @@
-# README Template
+# Ansible AWS Webserver Project
 
-Below is a template provided for use when building your README file for students.
+This project configures EC2 instances in the `aws` inventory group using Ansible.
 
-# Project Title
+## What the playbook does
 
-Project description goes here.
+- Installs and starts `firewalld`
+- Opens ports `80` and `443` from group variable `ports`
+- Checks `/var/www/html/www.companyplus.com` and prints status with `debug`
+- Runs `webserver` role to:
+  - install `nginx` using role var `webserver`
+  - create site directories with `nginx:nginx` and mode `0770`
+  - template `nginx.conf` using `app_root`, `server_name`, and `document_root`
+  - restart `nginx` via handler
 
-## Getting Started
+## Run
 
-Instructions for how to get a copy of the project running on your local machine.
+From the `starter` directory:
 
-### Dependencies
-
+```bash
+ansible-playbook -i inventory.ini playbook.yml
 ```
-Examples here
-```
-
-### Installation
-
-Step by step explanation of how to get a dev environment running.
-
-List out the steps
-
-```
-Give an example here
-```
-
-## Testing
-
-Explain the steps needed to run any automated tests
-
-### Break Down Tests
-
-Explain what each test does and why
-
-```
-Examples here
-```
-
-## Project Instructions
-
-This section should contain all the student deliverables for this project.
-
-## Built With
-
-* [Item1](www.item1.com) - Description of item
-* [Item2](www.item2.com) - Description of item
-* [Item3](www.item3.com) - Description of item
-
-Include all items used to build project.
 
 ## License
 
-[License](LICENSE.txt)
+[LICENSE.txt](LICENSE.txt)
