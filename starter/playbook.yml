@@ -1,0 +1,2 @@
+- hosts: aws
+  become: true
